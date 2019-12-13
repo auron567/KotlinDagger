@@ -1,10 +1,19 @@
 package com.example.kotlindagger.model
 
+import javax.inject.Inject
+import javax.inject.Singleton
+
 /**
  * Handles user lifecycle. Manages registrations, logs in and logs out.
  * Knows when the user is registered and/or logged in.
+ *
+ * Dagger how to provide instances of this type by @Inject. Dagger also know that [Storage]
+ * is a dependency.
+ *
+ * Marked with @Singleton since we only one an instance of UserManager in the application graph.
  */
-class UserManager(private val storage: Storage) {
+@Singleton
+class UserManager @Inject constructor(private val storage: Storage) {
 
     companion object {
         private const val REGISTERED_USER = "registered_user"

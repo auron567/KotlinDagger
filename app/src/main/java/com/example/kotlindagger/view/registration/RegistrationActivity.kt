@@ -9,15 +9,20 @@ import com.example.kotlindagger.view.main.MainActivity
 import com.example.kotlindagger.view.registration.enterdetails.EnterDetailsFragment
 import com.example.kotlindagger.view.registration.termsandconditions.TermsAndConditionsFragment
 import com.example.kotlindagger.viewmodel.RegistrationViewModel
+import javax.inject.Inject
 
 class RegistrationActivity : AppCompatActivity() {
-    lateinit var registrationViewModel: RegistrationViewModel
+
+    // @Inject annotated fields will be provided by Dagger
+    @Inject lateinit var registrationViewModel: RegistrationViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Grabs instance of the application graph
+        // and populates @Inject fields with objects from the graph
+        (application as MyApplication).appComponent.inject(this)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_registration)
-
-        registrationViewModel = RegistrationViewModel((application as MyApplication).userManager)
 
         supportFragmentManager.beginTransaction()
             .add(R.id.fragment_holder, EnterDetailsFragment())

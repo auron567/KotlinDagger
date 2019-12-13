@@ -5,16 +5,25 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.kotlindagger.R
 import com.example.kotlindagger.app.MyApplication
+import com.example.kotlindagger.model.UserManager
 import com.example.kotlindagger.view.login.LoginActivity
 import com.example.kotlindagger.view.registration.RegistrationActivity
 import com.example.kotlindagger.view.settings.SettingsActivity
 import com.example.kotlindagger.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var mainViewModel: MainViewModel
+
+    // @Inject annotated fields will be provided by Dagger
+    @Inject lateinit var userManager: UserManager
+    @Inject lateinit var mainViewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Grabs instance of the application graph
+        // and populates @Inject fields with objects from the graph
+        (application as MyApplication).appComponent.inject(this)
+
         super.onCreate(savedInstanceState)
 
         /**
@@ -22,7 +31,6 @@ class MainActivity : AppCompatActivity() {
          * if the user is not logged [LoginActivity] will be launched,
          * else carry on with MainActivity.
          */
-        val userManager = (application as MyApplication).userManager
         if (!userManager.isUserLogged()) {
             if (!userManager.isUserRegistered()) {
                 startActivity(Intent(this, RegistrationActivity::class.java))
@@ -34,7 +42,6 @@ class MainActivity : AppCompatActivity() {
         } else {
             setContentView(R.layout.activity_main)
 
-            mainViewModel = MainViewModel(userManager.userDataRepository!!)
             setupViews()
         }
     }
