@@ -1,5 +1,6 @@
 package com.example.kotlindagger.view.registration.termsandconditions
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,13 +10,23 @@ import com.example.kotlindagger.R
 import com.example.kotlindagger.view.registration.RegistrationActivity
 import com.example.kotlindagger.viewmodel.RegistrationViewModel
 import kotlinx.android.synthetic.main.fragment_terms_and_conditions.*
+import javax.inject.Inject
 
 /**
  * [RegistrationViewModel] is used to accept TCs (attached to Activity's lifecycle and shared between
  * different fragments).
  */
 class TermsAndConditionsFragment : Fragment() {
-    private lateinit var registrationViewModel: RegistrationViewModel
+
+    // @Inject annotated fields will be provided by Dagger
+    @Inject lateinit var registrationViewModel: RegistrationViewModel
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        // Grabs the RegistrationComponent from the Activity and injects this Fragment
+        (activity as RegistrationActivity).registrationComponent.inject(this)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,8 +38,6 @@ class TermsAndConditionsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        registrationViewModel = (activity as RegistrationActivity).registrationViewModel
 
         registerButton.setOnClickListener {
             registrationViewModel.acceptTCs()

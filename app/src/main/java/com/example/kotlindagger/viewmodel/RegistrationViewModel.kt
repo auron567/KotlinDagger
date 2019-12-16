@@ -1,5 +1,6 @@
 package com.example.kotlindagger.viewmodel
 
+import com.example.kotlindagger.di.ActivityScope
 import com.example.kotlindagger.model.UserManager
 import  com.example.kotlindagger.view.registration.RegistrationActivity
 import com.example.kotlindagger.view.registration.enterdetails.EnterDetailsFragment
@@ -13,6 +14,7 @@ import javax.inject.Inject
  * Dagger how to provide instances of this type by @Inject. Dagger also know that [UserManager]
  * is a dependency.
  */
+@ActivityScope
 class RegistrationViewModel @Inject constructor(private val userManager: UserManager) {
     private var username: String? = null
     private var password: String? = null

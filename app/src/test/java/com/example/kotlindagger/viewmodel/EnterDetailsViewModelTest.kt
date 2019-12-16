@@ -25,20 +25,23 @@ class EnterDetailsViewModelTest {
     fun `ValidateInput gives error when username is invalid`() {
         viewModel.validateInput("User", "Password")
 
-        assertTrue(viewModel.enterDetailsState.getOrAwaitValue() is EnterDetailsError)
+        assertTrue(viewModel.enterDetailsState.getOrAwaitValue()
+            .getContentIfNotHandled() is EnterDetailsError)
     }
 
     @Test
     fun `ValidateInput gives error when password is invalid`() {
         viewModel.validateInput("Username", "Pass")
 
-        assertTrue(viewModel.enterDetailsState.getOrAwaitValue() is EnterDetailsError)
+        assertTrue(viewModel.enterDetailsState.getOrAwaitValue()
+            .getContentIfNotHandled() is EnterDetailsError)
     }
 
     @Test
     fun `ValidateInput succeeds when values are valid`() {
         viewModel.validateInput("Username", "Password")
 
-        assertTrue(viewModel.enterDetailsState.getOrAwaitValue() is EnterDetailsSuccess)
+        assertTrue(viewModel.enterDetailsState.getOrAwaitValue()
+            .getContentIfNotHandled() is EnterDetailsSuccess)
     }
 }

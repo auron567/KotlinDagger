@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.kotlindagger.R
 import com.example.kotlindagger.app.MyApplication
+import com.example.kotlindagger.di.RegistrationComponent
 import com.example.kotlindagger.view.main.MainActivity
 import com.example.kotlindagger.view.registration.enterdetails.EnterDetailsFragment
 import com.example.kotlindagger.view.registration.termsandconditions.TermsAndConditionsFragment
@@ -13,13 +14,19 @@ import javax.inject.Inject
 
 class RegistrationActivity : AppCompatActivity() {
 
+    // Stores an instance of RegistrationComponent so that its Fragments can access it
+    lateinit var registrationComponent: RegistrationComponent
+
     // @Inject annotated fields will be provided by Dagger
     @Inject lateinit var registrationViewModel: RegistrationViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Grabs instance of the application graph
-        // and populates @Inject fields with objects from the graph
-        (application as MyApplication).appComponent.inject(this)
+        // Creates an instance of RegistrationComponent by grabbing the factory from the app graph
+        registrationComponent = (application as MyApplication).appComponent
+            .registrationComponent().create()
+
+        // Injects this activity to the just created RegistrationComponent
+        registrationComponent.inject(this)
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_registration)

@@ -1,5 +1,6 @@
 package com.example.kotlindagger.view.registration.enterdetails
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import com.example.kotlindagger.view.registration.RegistrationActivity
 import com.example.kotlindagger.viewmodel.EnterDetailsViewModel
 import com.example.kotlindagger.viewmodel.RegistrationViewModel
 import kotlinx.android.synthetic.main.fragment_enter_details.*
+import javax.inject.Inject
 
 /**
  * [RegistrationViewModel] is used to set the username and password (attached to Activity's lifecycle and
@@ -20,8 +22,17 @@ import kotlinx.android.synthetic.main.fragment_enter_details.*
  * [EnterDetailsViewModel] is used to validate the user's input data (attached to this Fragment's lifecycle).
  */
 class EnterDetailsFragment : Fragment() {
-    private lateinit var registrationViewModel: RegistrationViewModel
-    private lateinit var enterDetailsViewModel: EnterDetailsViewModel
+
+    // @Inject annotated fields will be provided by Dagger
+    @Inject lateinit var registrationViewModel: RegistrationViewModel
+    @Inject lateinit var enterDetailsViewModel: EnterDetailsViewModel
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        // Grabs the RegistrationComponent from the Activity and injects this Fragment
+        (activity as RegistrationActivity).registrationComponent.inject(this)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,21 +45,20 @@ class EnterDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        registrationViewModel = (activity as RegistrationActivity).registrationViewModel
+        enterDetailsViewModel.enterDetailsState.observe(this, Observer { event ->
+            event.getContentIfNotHandled()?.let { state ->
+                when (state) {
+                    is EnterDetailsSuccess -> {
+                        val username = usernameEditText.text.toString()
+                        val password = passwordEditText.text.toString()
+                        registrationViewModel.updateUserData(username, password)
 
-        enterDetailsViewModel = EnterDetailsViewModel()
-        enterDetailsViewModel.enterDetailsState.observe(this, Observer { state ->
-            when (state) {
-                is EnterDetailsSuccess -> {
-                    val username = usernameEditText.text.toString()
-                    val password = passwordEditText.text.toString()
-                    registrationViewModel.updateUserData(username, password)
-
-                    (activity as RegistrationActivity).onDetailsEntered()
-                }
-                is EnterDetailsError -> {
-                    errorTextView.text = state.error
-                    errorTextView.visibility = View.VISIBLE
+                        (activity as RegistrationActivity).onDetailsEntered()
+                    }
+                    is EnterDetailsError -> {
+                        errorTextView.text = state.error
+                        errorTextView.visibility = View.VISIBLE
+                    }
                 }
             }
         })
