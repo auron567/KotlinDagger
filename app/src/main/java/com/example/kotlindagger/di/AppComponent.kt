@@ -24,6 +24,8 @@ interface AppComponent {
     // Types that can be retrieved from this component
     fun registrationComponent(): RegistrationComponent.Factory
 
+    fun loginComponent(): LoginComponent.Factory
+
     // Classes than can be injected by this component
     fun inject(activity: MainActivity)
 }

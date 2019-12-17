@@ -14,15 +14,22 @@ import com.example.kotlindagger.view.main.MainActivity
 import com.example.kotlindagger.view.registration.RegistrationActivity
 import com.example.kotlindagger.viewmodel.LoginViewModel
 import kotlinx.android.synthetic.main.activity_login.*
+import javax.inject.Inject
 
 class LoginActivity : AppCompatActivity() {
-    private lateinit var loginViewModel: LoginViewModel
+
+    // @Inject annotated fields will be provided by Dagger
+    @Inject lateinit var loginViewModel: LoginViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        // Creates an instance of LoginComponent by grabbing the factory from the app graph
+        // and injects this activity to that component
+        (application as MyApplication).appComponent.loginComponent().create().inject(this)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        loginViewModel = LoginViewModel((application as MyApplication).userManager)
         loginViewModel.loginState.observe(this, Observer { state ->
             when (state) {
                 is LoginSuccess -> {
