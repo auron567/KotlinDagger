@@ -1,5 +1,6 @@
 package com.example.kotlindagger.model
 
+import com.example.kotlindagger.di.UserComponent
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -13,14 +14,18 @@ import javax.inject.Singleton
  * Marked with @Singleton since we only one an instance of UserManager in the application graph.
  */
 @Singleton
-class UserManager @Inject constructor(private val storage: Storage) {
+class UserManager @Inject constructor(
+    private val storage: Storage,
+    private val userComponentFactory: UserComponent.Factory
+) {
 
     companion object {
         private const val REGISTERED_USER = "registered_user"
         private const val PASSWORD_SUFFIX = "password"
     }
 
-    var userDataRepository: UserDataRepository? = null
+    var userComponent: UserComponent? = null
+        private set
 
     val username: String
         get() = storage.getString(REGISTERED_USER)
@@ -57,14 +62,14 @@ class UserManager @Inject constructor(private val storage: Storage) {
     }
 
     fun logoutUser() {
-        userDataRepository = null
+        userComponent = null
     }
 
     fun isUserLogged(): Boolean {
-        return userDataRepository != null
+        return userComponent != null
     }
 
     private fun userJustLogged() {
-        userDataRepository = UserDataRepository(this)
+        userComponent = userComponentFactory.create()
     }
 }

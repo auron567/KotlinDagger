@@ -1,6 +1,7 @@
 package com.example.kotlindagger.model
 
 import com.example.kotlindagger.app.randomInt
+import com.example.kotlindagger.di.LoggedUserScope
 import javax.inject.Inject
 
 /**
@@ -9,6 +10,7 @@ import javax.inject.Inject
  * Dagger how to provide instances of this type by @Inject. Dagger also know that [UserManager]
  * is a dependency.
  */
+@LoggedUserScope
 class UserDataRepository @Inject constructor(private val userManager: UserManager) {
     val username: String
         get() = userManager.username

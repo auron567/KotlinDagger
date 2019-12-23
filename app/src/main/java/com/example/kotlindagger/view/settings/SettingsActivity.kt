@@ -8,17 +8,23 @@ import com.example.kotlindagger.app.MyApplication
 import com.example.kotlindagger.view.login.LoginActivity
 import com.example.kotlindagger.viewmodel.SettingsViewModel
 import kotlinx.android.synthetic.main.activity_settings.*
+import javax.inject.Inject
 
 class SettingsActivity : AppCompatActivity() {
-    private lateinit var settingsViewModel: SettingsViewModel
+
+    // @Inject annotated fields will be provided by Dagger
+    @Inject lateinit var settingsViewModel: SettingsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        // Gets the UserManager from the app graph to obtain the instance of UserComponent
+        // and injects this activity to that component
+        val userManager = (application as MyApplication).appComponent.userManager()
+        userManager.userComponent!!.inject(this)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
-        val userManager = (application as MyApplication).userManager
-
-        settingsViewModel = SettingsViewModel(userManager.userDataRepository!!, userManager)
         setupViews()
     }
 

@@ -1,7 +1,7 @@
 package com.example.kotlindagger.di
 
 import android.content.Context
-import com.example.kotlindagger.view.main.MainActivity
+import com.example.kotlindagger.model.UserManager
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
@@ -26,6 +26,5 @@ interface AppComponent {
 
     fun loginComponent(): LoginComponent.Factory
 
-    // Classes than can be injected by this component
-    fun inject(activity: MainActivity)
+    fun userManager(): UserManager
 }

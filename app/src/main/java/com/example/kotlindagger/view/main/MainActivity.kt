@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.kotlindagger.R
 import com.example.kotlindagger.app.MyApplication
-import com.example.kotlindagger.model.UserManager
 import com.example.kotlindagger.view.login.LoginActivity
 import com.example.kotlindagger.view.registration.RegistrationActivity
 import com.example.kotlindagger.view.settings.SettingsActivity
@@ -16,21 +15,19 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity() {
 
     // @Inject annotated fields will be provided by Dagger
-    @Inject lateinit var userManager: UserManager
     @Inject lateinit var mainViewModel: MainViewModel
 
+    /**
+     * If the user is not registered [RegistrationActivity] will be launched,
+     * if the user is not logged [LoginActivity] will be launched,
+     * else carry on with MainActivity.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Grabs instance of the application graph
-        // and populates @Inject fields with objects from the graph
-        (application as MyApplication).appComponent.inject(this)
-
         super.onCreate(savedInstanceState)
 
-        /**
-         * If the user is not registered [RegistrationActivity] will be launched,
-         * if the user is not logged [LoginActivity] will be launched,
-         * else carry on with MainActivity.
-         */
+        // Gets the UserManager from the app graph
+        val userManager = (application as MyApplication).appComponent.userManager()
+
         if (!userManager.isUserLogged()) {
             if (!userManager.isUserRegistered()) {
                 startActivity(Intent(this, RegistrationActivity::class.java))
@@ -41,6 +38,10 @@ class MainActivity : AppCompatActivity() {
             }
         } else {
             setContentView(R.layout.activity_main)
+
+            // Gets the instance of UserComponent from the UserManager
+            // and injects this activity to that component
+            userManager.userComponent!!.inject(this)
 
             setupViews()
         }
