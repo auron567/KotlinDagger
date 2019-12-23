@@ -1,5 +1,8 @@
 package com.example.kotlindagger.model
 
+import com.example.kotlindagger.di.UserComponent
+import io.mockk.every
+import io.mockk.mockk
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -10,8 +13,12 @@ class UserManagerTest {
 
     @Before
     fun setup() {
+        val mockUserComponentFactory = mockk<UserComponent.Factory>()
+        val mockUserComponent = mockk<UserComponent>()
+        every { mockUserComponentFactory.create() } returns mockUserComponent
+
         storage = FakeStorage()
-        userManager = UserManager(storage)
+        userManager = UserManager(storage, mockUserComponentFactory)
     }
 
     @Test

@@ -1,6 +1,8 @@
 package com.example.kotlindagger.model
 
-class FakeStorage : Storage {
+import javax.inject.Inject
+
+class FakeStorage @Inject constructor() : Storage {
     private val map = mutableMapOf<String, String>()
 
     override fun setString(key: String, value: String) {

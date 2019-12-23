@@ -8,6 +8,11 @@ open class MyApplication : Application() {
 
     // Instance of the AppComponent that will be used by all the activities in the project
     val appComponent: AppComponent by lazy {
-        DaggerAppComponent.factory().create(applicationContext)
+        initializeComponent()
+    }
+
+    open fun initializeComponent(): AppComponent {
+        // Creates an instance of the AppComponent using its Factory constructor
+        return DaggerAppComponent.factory().create(applicationContext)
     }
 }
