@@ -22,6 +22,8 @@ interface AppComponent {
     }
 
     // Types that can be retrieved from this component
+    fun splashComponent(): SplashComponent.Factory
+
     fun registrationComponent(): RegistrationComponent.Factory
 
     fun loginComponent(): LoginComponent.Factory

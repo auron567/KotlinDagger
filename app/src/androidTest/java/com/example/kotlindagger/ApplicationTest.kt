@@ -7,14 +7,14 @@ import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
-import com.example.kotlindagger.view.main.MainActivity
+import com.example.kotlindagger.view.splash.SplashActivity
 import org.junit.Test
 
 class ApplicationTest {
 
     @Test
     fun runApp() {
-        ActivityScenario.launch(MainActivity::class.java)
+        ActivityScenario.launch(SplashActivity::class.java)
 
         // Should be in Registration/EnterDetails because the user is not registered
         onView(withText("Register to Dagger World!")).check(matches(isDisplayed()))
